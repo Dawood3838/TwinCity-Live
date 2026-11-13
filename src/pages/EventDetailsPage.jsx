@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import TicketSelector from '../components/TicketSelector.jsx'
-import { useBooking } from '../context/BookingContext.jsx'
+import { useBooking } from '../context/useBooking.js'
 import { loadEventById } from '../services/eventService.js'
 import { formatEventDate } from '../utils/eventFormatting.js'
 import { validateTicketQuantity } from '../utils/ticketValidation.js'
@@ -9,82 +9,85 @@ import { validateTicketQuantity } from '../utils/ticketValidation.js'
 function EventDetailsPage() {
   const { id } = useParams()
   const [searchParams] = useSearchParams()
-  const { selections, addOrUpdateSelection } = useBooking()
-  const [event, setEvent] = useState(null)
-  const [loadStatus, setLoadStatus] = useState('loading')
-  const [loadError, setLoadError] = useState('')
+  const {
+    selections,
+    addOrUpdateSelection,
+    availabilityDemo,
+    availabilityDemoMessage,
+  } = useBooking()
+  const [loadResult, setLoadResult] = useState(null)
   const [retryCount, setRetryCount] = useState(0)
-  const [ticketTypeId, setTicketTypeId] = useState('')
-  const [quantity, setQuantity] = useState('1')
+  const [ticketChoice, setTicketChoice] = useState(null)
+  const [quantityDraft, setQuantityDraft] = useState(null)
   const [quantityError, setQuantityError] = useState('')
   const [statusMessage, setStatusMessage] = useState('')
   const requestedTicketTypeId = searchParams.get('ticketType')
   const demoFailureRequested = searchParams.get('demoLoadError') === '1'
+  const requestKey = `${id}:${retryCount}:${demoFailureRequested}:${availabilityDemo?.ticketTypeId ?? ''}:${availabilityDemo?.availableQuantity ?? ''}`
 
   useEffect(() => {
     let isCurrentRequest = true
-    setLoadStatus('loading')
-    setLoadError('')
-    setEvent(null)
 
     loadEventById(id, {
       simulateFailure: demoFailureRequested && retryCount === 0,
+      availabilityDemo,
     })
       .then((loadedEvent) => {
         if (isCurrentRequest) {
-          setEvent(loadedEvent)
-          setTicketTypeId(
-            loadedEvent?.ticketTypes.find((ticket) => ticket.availableQuantity > 0)
-              ?.id ??
-              loadedEvent?.ticketTypes[0]?.id ??
-              '',
-          )
-          setQuantity('1')
-          setQuantityError('')
-          setStatusMessage('')
-          setLoadStatus(loadedEvent ? 'success' : 'not-found')
+          setLoadResult({
+            requestKey,
+            status: loadedEvent ? 'success' : 'not-found',
+            event: loadedEvent,
+          })
         }
       })
       .catch((error) => {
         if (isCurrentRequest) {
-          setLoadError(error.message)
-          setLoadStatus('error')
+          setLoadResult({
+            requestKey,
+            status: 'error',
+            error: error.message,
+          })
         }
       })
 
     return () => {
       isCurrentRequest = false
     }
-  }, [demoFailureRequested, id, retryCount])
+  }, [availabilityDemo, demoFailureRequested, id, requestKey, retryCount])
 
+  const currentLoadResult =
+    loadResult?.requestKey === requestKey ? loadResult : null
+  const event = currentLoadResult?.event ?? null
+  const loadStatus = currentLoadResult?.status ?? 'loading'
+  const loadError = currentLoadResult?.error ?? ''
+  const defaultTicketTypeId =
+    event?.ticketTypes.find((ticket) => ticket.availableQuantity > 0)?.id ??
+    event?.ticketTypes[0]?.id ??
+    ''
+  const requestedTicket = event?.ticketTypes.find(
+    (ticket) =>
+      ticket.id === requestedTicketTypeId && ticket.availableQuantity > 0,
+  )
+  const ticketTypeId =
+    ticketChoice && ticketChoice.eventId === event?.id
+      ? ticketChoice.ticketTypeId
+      : requestedTicket?.id ?? defaultTicketTypeId
   const selectedTicket = event?.ticketTypes.find(
     (ticket) => ticket.id === ticketTypeId,
   )
+
   const existingSelection = selections.find(
     (selection) =>
       selection.eventId === event?.id &&
       selection.ticketTypeId === selectedTicket?.id,
   )
 
-  useEffect(() => {
-    if (existingSelection) {
-      setQuantity(String(existingSelection.quantity))
-    }
-  }, [existingSelection])
-
-  useEffect(() => {
-    if (!event || !requestedTicketTypeId) {
-      return
-    }
-
-    const requestedTicket = event.ticketTypes.find(
-      (ticket) =>
-        ticket.id === requestedTicketTypeId && ticket.availableQuantity > 0,
-    )
-    if (requestedTicket) {
-      setTicketTypeId(requestedTicket.id)
-    }
-  }, [event, requestedTicketTypeId])
+  const quantityKey = `${event?.id ?? ''}:${selectedTicket?.id ?? ''}`
+  const quantity =
+    quantityDraft?.key === quantityKey
+      ? quantityDraft.value
+      : String(existingSelection?.quantity ?? 1)
 
   const changeTicketType = (nextTicketTypeId) => {
     const nextSelection = selections.find(
@@ -92,14 +95,17 @@ function EventDetailsPage() {
         selection.eventId === event.id &&
         selection.ticketTypeId === nextTicketTypeId,
     )
-    setTicketTypeId(nextTicketTypeId)
-    setQuantity(String(nextSelection?.quantity ?? 1))
+    setTicketChoice({ eventId: event.id, ticketTypeId: nextTicketTypeId })
+    setQuantityDraft({
+      key: `${event.id}:${nextTicketTypeId}`,
+      value: String(nextSelection?.quantity ?? 1),
+    })
     setQuantityError('')
     setStatusMessage('')
   }
 
   const changeQuantity = (nextQuantity) => {
-    setQuantity(nextQuantity)
+    setQuantityDraft({ key: quantityKey, value: nextQuantity })
     setStatusMessage('')
     const validation = selectedTicket
       ? validateTicketQuantity(
@@ -154,7 +160,6 @@ function EventDetailsPage() {
   }
 
   const retryLoading = () => {
-    setLoadStatus('loading')
     setRetryCount((currentCount) => currentCount + 1)
   }
 
@@ -216,6 +221,12 @@ function EventDetailsPage() {
         <span className="browse-event-category">{event.category}</span>
         <span className="event-details-art-caption">TWINCITY LIVE · {event.city.toUpperCase()}</span>
       </div>
+
+      {availabilityDemoMessage && (
+        <p className="booking-demo-notice" role="status">
+          Testing demo: {availabilityDemoMessage}
+        </p>
+      )}
 
       <div className="event-details-layout">
         <article className="event-detail-information">

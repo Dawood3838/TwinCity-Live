@@ -1,5 +1,5 @@
 import { Link, NavLink } from 'react-router-dom'
-import { useBooking } from '../context/BookingContext.jsx'
+import { useBooking } from '../context/useBooking.js'
 
 function Navbar() {
   const { ticketCount } = useBooking()

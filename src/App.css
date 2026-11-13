@@ -2976,3 +2976,250 @@
     text-align: left;
   }
 }
+
+.booking-demo-notice,
+.booking-storage-notices,
+.booking-invalid-selections {
+  margin: 0 0 1rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid #e8c99a;
+  border-radius: 4px;
+  color: #614b2c;
+  background: #fff8e9;
+  font-size: 0.72rem;
+  line-height: 1.6;
+}
+
+.booking-storage-notices p {
+  margin: 0;
+}
+
+.booking-storage-notices p + p {
+  margin-top: 0.35rem;
+}
+
+.booking-invalid-selections {
+  border-color: #efc8bc;
+  color: #713e34;
+  background: #fff6f2;
+}
+
+.booking-invalid-selections h2 {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+.booking-invalid-selections > p {
+  margin: 0.35rem 0 0;
+}
+
+.booking-invalid-selections ul {
+  display: grid;
+  gap: 0.65rem;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.booking-invalid-selections li {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  padding-top: 0.65rem;
+  border-top: 1px solid #eed9d2;
+}
+
+.booking-invalid-selections li > div:first-child {
+  display: grid;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.booking-invalid-selections li span {
+  overflow-wrap: anywhere;
+}
+
+.booking-invalid-actions {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.65rem;
+}
+
+.booking-invalid-actions a,
+.booking-invalid-actions button {
+  padding: 0;
+  border: 0;
+  color: #8d392c;
+  background: transparent;
+  font: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.confirmation-page {
+  padding-top: clamp(3rem, 8vw, 6rem);
+  padding-bottom: clamp(3rem, 8vw, 6rem);
+}
+
+.confirmation-page > .eyebrow {
+  color: var(--coral-dark);
+}
+
+.confirmation-page > h1 {
+  max-width: 760px;
+  margin: 0.55rem 0 0.8rem;
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: clamp(2.5rem, 7vw, 5rem);
+  font-weight: 500;
+  letter-spacing: -0.06em;
+  line-height: 0.98;
+}
+
+.confirmation-page > h1 span {
+  color: var(--coral-dark);
+}
+
+.confirmation-page > p:not(.eyebrow) {
+  max-width: 580px;
+  margin: 0;
+  color: #69716d;
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
+.confirmation-reference {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  max-width: 760px;
+  margin: 1.5rem 0;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: #fffdfa;
+}
+
+.confirmation-reference span {
+  color: #6f7773;
+  font-size: 0.7rem;
+  font-weight: 650;
+}
+
+.confirmation-reference strong {
+  color: var(--ink);
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+}
+
+.confirmation-summary {
+  max-width: 760px;
+  margin-bottom: 1.5rem;
+  padding: 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: #fffdfa;
+  box-shadow: 0 10px 28px rgba(35, 38, 42, 0.04);
+}
+
+.confirmation-summary-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.confirmation-summary-heading .eyebrow {
+  margin: 0 0 0.35rem;
+  color: var(--coral-dark);
+}
+
+.confirmation-summary-heading h2 {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 1.55rem;
+  font-weight: 500;
+}
+
+.confirmation-summary-heading > span {
+  flex: 0 0 auto;
+  color: #747a76;
+  font-size: 0.68rem;
+}
+
+.confirmation-ticket-list {
+  display: grid;
+  gap: 0.85rem;
+  margin: 0;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid var(--line);
+  list-style: none;
+}
+
+.confirmation-ticket {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.confirmation-ticket > div {
+  min-width: 0;
+}
+
+.confirmation-ticket h3 {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.confirmation-ticket p {
+  margin: 0.2rem 0 0;
+  color: #777d79;
+  font-size: 0.65rem;
+  line-height: 1.5;
+}
+
+.confirmation-ticket > strong {
+  flex: 0 0 auto;
+  color: var(--ink);
+  font-size: 0.72rem;
+  white-space: nowrap;
+}
+
+.confirmation-totals {
+  max-width: 390px;
+  margin-left: auto;
+}
+
+.confirmation-page > .button {
+  display: inline-flex;
+}
+
+@media (max-width: 680px) {
+  .booking-invalid-selections li {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .booking-invalid-actions {
+    justify-content: flex-start;
+  }
+
+  .confirmation-summary {
+    padding: 1rem;
+  }
+}

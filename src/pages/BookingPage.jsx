@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { useBooking } from '../context/BookingContext.jsx'
-import events from '../data/events.js'
+import { Link, useNavigate } from 'react-router-dom'
+import { useBooking } from '../context/useBooking.js'
 import { formatEventDate, formatEventPrice } from '../utils/eventFormatting.js'
 import { validateAgeEligibility } from '../utils/ageEligibility.js'
 import { calculateBookingTotals } from '../utils/bookingPricing.js'
@@ -36,26 +35,26 @@ function validateEmail(email) {
 }
 
 function BookingPage() {
-  const { selections, removeSelection } = useBooking()
+  const {
+    selections,
+    invalidSelections,
+    storageMessages,
+    eventCatalog,
+    availabilityDemoMessage,
+    removeSelection,
+    clearSelections,
+  } = useBooking()
+  const navigate = useNavigate()
   const [attendee, setAttendee] = useState(initialAttendee)
   const [fieldErrors, setFieldErrors] = useState({})
   const [bookingError, setBookingError] = useState('')
-  const [reviewedSelectionKey, setReviewedSelectionKey] = useState('')
 
   const totals = calculateBookingTotals(selections)
   const selectedEvents = useMemo(() => {
     const selectedEventIds = new Set(selections.map((selection) => selection.eventId))
-    return events.filter((event) => selectedEventIds.has(event.id))
-  }, [selections])
+    return eventCatalog.filter((event) => selectedEventIds.has(event.id))
+  }, [eventCatalog, selections])
   const ageEligibility = validateAgeEligibility(attendee.age, selectedEvents)
-  const selectionKey = selections
-    .map(
-      (selection) =>
-        `${selection.eventId}:${selection.ticketTypeId}:${selection.quantity}`,
-    )
-    .join('|')
-  const isBookingReady =
-    Boolean(selectionKey) && reviewedSelectionKey === selectionKey
 
   const handleAttendeeChange = (event) => {
     const { name, value } = event.target
@@ -68,7 +67,6 @@ function BookingPage() {
       [name]: '',
     }))
     setBookingError('')
-    setReviewedSelectionKey('')
   }
 
   const handleSubmit = (event) => {
@@ -80,10 +78,16 @@ function BookingPage() {
       age: ageEligibility.valid ? '' : ageEligibility.message,
     }
     setFieldErrors(nextFieldErrors)
-    setReviewedSelectionKey('')
 
     if (selections.length === 0 || totals.ticketCount === 0) {
       setBookingError('Add at least one ticket before reviewing your booking.')
+      return
+    }
+
+    if (invalidSelections.length > 0) {
+      setBookingError(
+        'Correct or remove saved tickets with unavailable quantities before continuing.',
+      )
       return
     }
 
@@ -93,7 +97,17 @@ function BookingPage() {
     }
 
     setBookingError('')
-    setReviewedSelectionKey(selectionKey)
+    const snapshot = {
+      reference: `TCL-${Date.now().toString(36).toUpperCase()}-${Math.random()
+        .toString(36)
+        .slice(2, 6)
+        .toUpperCase()}`,
+      createdAt: new Date().toISOString(),
+      selections: selections.map((selection) => ({ ...selection })),
+      totals: { ...totals },
+    }
+    clearSelections()
+    navigate('/confirmation', { state: { booking: snapshot } })
   }
 
   return (
@@ -104,17 +118,73 @@ function BookingPage() {
           Your <span>booking details.</span>
         </h1>
         <p>
-          Add attendee information and review your ticket selection. This is a
-          preview only; no booking is submitted and no payment is collected.
+          Add attendee information to confirm your simulated booking. No
+          payment is collected.
         </p>
       </header>
 
-      {selections.length === 0 && (
+      {selections.length === 0 && invalidSelections.length === 0 && (
         <div className="booking-empty-notice" role="status">
           <strong>Your selection is empty.</strong>
-          <span>Add an event ticket before continuing to a booking review.</span>
+          <span>Add an event ticket before continuing to confirmation.</span>
           <Link to="/events">Explore events</Link>
         </div>
+      )}
+
+      {availabilityDemoMessage && (
+        <p className="booking-demo-notice" role="status">
+          Testing demo: {availabilityDemoMessage}
+        </p>
+      )}
+
+      {storageMessages.length > 0 && (
+        <div className="booking-storage-notices" role="status">
+          {storageMessages.map((message, index) => (
+            <p key={`${index}:${message}`}>{message}</p>
+          ))}
+        </div>
+      )}
+
+      {invalidSelections.length > 0 && (
+        <section className="booking-invalid-selections" role="alert">
+          <h2>Some saved tickets need attention</h2>
+          <p>
+            Availability may have changed since these tickets were saved. They
+            are excluded from your price and cannot be booked until corrected or
+            removed.
+          </p>
+          <ul>
+            {invalidSelections.map((selection) => (
+              <li key={selection.key}>
+                <div>
+                  <strong>{selection.eventTitle}</strong>
+                  <span>
+                    {selection.ticketTypeName} · quantity {selection.quantity}
+                  </span>
+                  <span>{selection.reason}</span>
+                </div>
+                <div className="booking-invalid-actions">
+                  {selection.canEdit && (
+                    <Link
+                      to={`/events/${selection.eventId}?ticketType=${encodeURIComponent(selection.ticketTypeId)}`}
+                    >
+                      Change selection
+                    </Link>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() =>
+                      removeSelection(selection.eventId, selection.ticketTypeId)
+                    }
+                    aria-label={`Remove invalid ${selection.ticketTypeName} selection`}
+                  >
+                    Remove
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
       )}
 
       <div className="booking-workspace">
@@ -123,7 +193,7 @@ function BookingPage() {
             <div className="booking-panel-heading">
               <p className="eyebrow">ATTENDEE INFORMATION</p>
               <h2 id="attendee-heading">Who’s going?</h2>
-              <p>One attendee is recorded for this preview booking.</p>
+              <p>This simulated booking requires one attendee.</p>
             </div>
 
             <form
@@ -229,21 +299,11 @@ function BookingPage() {
                 </p>
               )}
 
-              {isBookingReady && (
-                <div className="booking-ready-message" role="status">
-                  <strong>Your booking is ready for review.</strong>
-                  <span>
-                    Attendee details and the current ticket selection passed
-                    validation. Nothing has been submitted.
-                  </span>
-                </div>
-              )}
-
               <button
                 className="button button--accent booking-submit-button"
                 type="submit"
               >
-                Review booking <span aria-hidden="true">↗</span>
+                Confirm booking <span aria-hidden="true">↗</span>
               </button>
             </form>
           </section>
@@ -358,7 +418,7 @@ function BookingPage() {
             A single Rs 100 service fee applies to a non-empty booking.
           </p>
           <p className="booking-preview-note">
-            No payment is collected at this stage.
+            This is a demo booking; no payment is collected.
           </p>
         </aside>
       </div>

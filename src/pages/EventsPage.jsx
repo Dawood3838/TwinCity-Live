@@ -1,8 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
 import EventCard from '../components/EventCard.jsx'
 import EventFilters from '../components/EventFilters.jsx'
+import { useBooking } from '../context/useBooking.js'
 import { loadEvents } from '../services/eventService.js'
 import { getStartingPrice } from '../utils/eventFormatting.js'
+
+const EMPTY_EVENTS = []
 
 function EventLoadingState() {
   return (
@@ -20,9 +23,8 @@ function EventLoadingState() {
 }
 
 function EventsPage() {
-  const [events, setEvents] = useState([])
-  const [loadStatus, setLoadStatus] = useState('loading')
-  const [loadError, setLoadError] = useState('')
+  const { availabilityDemo, availabilityDemoMessage } = useBooking()
+  const [loadResult, setLoadResult] = useState(null)
   const [retryCount, setRetryCount] = useState(0)
   const [search, setSearch] = useState('')
   const [category, setCategory] = useState('')
@@ -30,32 +32,44 @@ function EventsPage() {
   const [sort, setSort] = useState('date-asc')
   const demoFailureRequested =
     new URLSearchParams(window.location.search).get('demoLoadError') === '1'
+  const requestKey = `${retryCount}:${demoFailureRequested}:${availabilityDemo?.ticketTypeId ?? ''}:${availabilityDemo?.availableQuantity ?? ''}`
 
   useEffect(() => {
     let isCurrentRequest = true
-    setLoadStatus('loading')
-    setLoadError('')
 
     loadEvents({
       simulateFailure: demoFailureRequested && retryCount === 0,
+      availabilityDemo,
     })
       .then((loadedEvents) => {
         if (isCurrentRequest) {
-          setEvents(loadedEvents)
-          setLoadStatus('success')
+          setLoadResult({
+            requestKey,
+            status: 'success',
+            events: loadedEvents,
+          })
         }
       })
       .catch((error) => {
         if (isCurrentRequest) {
-          setLoadError(error.message)
-          setLoadStatus('error')
+          setLoadResult({
+            requestKey,
+            status: 'error',
+            error: error.message,
+          })
         }
       })
 
     return () => {
       isCurrentRequest = false
     }
-  }, [demoFailureRequested, retryCount])
+  }, [availabilityDemo, demoFailureRequested, requestKey, retryCount])
+
+  const currentLoadResult =
+    loadResult?.requestKey === requestKey ? loadResult : null
+  const events = currentLoadResult?.events ?? EMPTY_EVENTS
+  const loadStatus = currentLoadResult?.status ?? 'loading'
+  const loadError = currentLoadResult?.error ?? ''
 
   const categories = useMemo(
     () => [...new Set(events.map((event) => event.category))].sort(),
@@ -104,7 +118,6 @@ function EventsPage() {
     setSort('date-asc')
   }
   const retryLoading = () => {
-    setLoadStatus('loading')
     setRetryCount((currentCount) => currentCount + 1)
   }
 
@@ -120,6 +133,12 @@ function EventsPage() {
           reason to get out there.
         </p>
       </header>
+
+      {availabilityDemoMessage && (
+        <p className="booking-demo-notice" role="status">
+          Testing demo: {availabilityDemoMessage}
+        </p>
+      )}
 
       {loadStatus !== 'error' && (
         <EventFilters

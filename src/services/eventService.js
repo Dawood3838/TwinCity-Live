@@ -1,6 +1,10 @@
 import events from '../data/events.js'
+import { applyAvailabilityDemo } from '../utils/eventAvailability.js'
 
-export function loadEvents({ simulateFailure = false } = {}) {
+export function loadEvents({
+  simulateFailure = false,
+  availabilityDemo = null,
+} = {}) {
   return new Promise((resolve, reject) => {
     window.setTimeout(() => {
       if (simulateFailure) {
@@ -8,7 +12,7 @@ export function loadEvents({ simulateFailure = false } = {}) {
         return
       }
 
-      resolve(events)
+      resolve(applyAvailabilityDemo(events, availabilityDemo))
     }, 450)
   })
 }

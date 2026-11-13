@@ -17,6 +17,23 @@ The event catalog is loaded from local data with a short simulated delay. To pre
 the loading error state and its recovery, open `/events?demoLoadError=1`. The first
 load fails intentionally; select **Retry** to load the local events successfully.
 
+## Ticket availability demo
+
+The availability override is a development/testing feature and changes only the
+local in-memory event catalog. To demonstrate a saved ticket becoming invalid:
+
+1. Select at least 3 **Workshop Seat** tickets for **Web Development Bootcamp**
+   (`E004-workshop`) and open `/booking` once so the selection is saved.
+2. Reload the app at `/events?demoAvailability=E004-workshop:2`.
+3. Open **My Booking**. The saved quantity exceeds the demo capacity, so it is
+   excluded from totals and shown with a correction link and a remove action.
+4. Choose **Change selection** to open the event and set a quantity of 2 or less,
+   or remove the invalid saved selection.
+
+Use `:0` instead of `:2` to simulate a sold-out ticket type. Remove the query
+parameter and reload to return to the normal catalog. No production availability
+or event data is modified.
+
 ## Expanding the Oxlint configuration
 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
