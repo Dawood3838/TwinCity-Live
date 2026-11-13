@@ -8,6 +8,7 @@ import EventDetailsPage from './pages/EventDetailsPage.jsx'
 import EventsPage from './pages/EventsPage.jsx'
 import HomePage from './pages/HomePage.jsx'
 import NotFoundPage from './pages/NotFoundPage.jsx'
+import SupportPage from './pages/SupportPage.jsx'
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
             <Route path="/events/:id" element={<EventDetailsPage />} />
             <Route path="/booking" element={<BookingPage />} />
             <Route path="/confirmation" element={<ConfirmationPage />} />
+            <Route path="/support" element={<SupportPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>
         </Routes>

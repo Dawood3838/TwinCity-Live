@@ -3,7 +3,7 @@ import EventCard from '../components/EventCard.jsx'
 import EventFilters from '../components/EventFilters.jsx'
 import { useBooking } from '../context/useBooking.js'
 import { loadEvents } from '../services/eventService.js'
-import { getStartingPrice } from '../utils/eventFormatting.js'
+import { filterAndSortEvents } from '../utils/eventFiltering.js'
 
 const EMPTY_EVENTS = []
 
@@ -30,6 +30,8 @@ function EventsPage() {
   const [category, setCategory] = useState('')
   const [city, setCity] = useState('')
   const [sort, setSort] = useState('date-asc')
+  const [minPrice, setMinPrice] = useState('')
+  const [maxPrice, setMaxPrice] = useState('')
   const demoFailureRequested =
     new URLSearchParams(window.location.search).get('demoLoadError') === '1'
   const requestKey = `${retryCount}:${demoFailureRequested}:${availabilityDemo?.ticketTypeId ?? ''}:${availabilityDemo?.availableQuantity ?? ''}`
@@ -70,6 +72,19 @@ function EventsPage() {
   const events = currentLoadResult?.events ?? EMPTY_EVENTS
   const loadStatus = currentLoadResult?.status ?? 'loading'
   const loadError = currentLoadResult?.error ?? ''
+  const numericMinimum = minPrice === '' ? null : Number(minPrice)
+  const numericMaximum = maxPrice === '' ? null : Number(maxPrice)
+  const priceRangeError =
+    (numericMinimum !== null &&
+      (!Number.isFinite(numericMinimum) || numericMinimum < 0)) ||
+    (numericMaximum !== null &&
+      (!Number.isFinite(numericMaximum) || numericMaximum < 0))
+      ? 'Enter a valid price of Rs 0 or more.'
+      : numericMinimum !== null &&
+          numericMaximum !== null &&
+          numericMinimum > numericMaximum
+        ? 'Minimum price must not exceed maximum price.'
+        : ''
 
   const categories = useMemo(
     () => [...new Set(events.map((event) => event.category))].sort(),
@@ -80,42 +95,45 @@ function EventsPage() {
     [events],
   )
   const filteredEvents = useMemo(() => {
-    const query = search.trim().toLocaleLowerCase()
-    const matches = events.filter((event) => {
-      const matchesSearch =
-        !query ||
-        [event.title, event.venue, event.city, event.category].some((value) =>
-          value.toLocaleLowerCase().includes(query),
-        )
+    if (priceRangeError) {
+      return []
+    }
 
-      return (
-        matchesSearch &&
-        (!category || event.category === category) &&
-        (!city || event.city === city)
-      )
+    return filterAndSortEvents(events, {
+      search,
+      category,
+      city,
+      sort,
+      minPrice: numericMinimum,
+      maxPrice: numericMaximum,
     })
-
-    return [...matches].sort((first, second) => {
-      if (sort === 'date-desc') {
-        return new Date(second.dateTime) - new Date(first.dateTime)
-      }
-      if (sort === 'price-asc') {
-        return getStartingPrice(first) - getStartingPrice(second)
-      }
-      if (sort === 'price-desc') {
-        return getStartingPrice(second) - getStartingPrice(first)
-      }
-      return new Date(first.dateTime) - new Date(second.dateTime)
-    })
-  }, [category, city, events, search, sort])
+  }, [
+    category,
+    city,
+    events,
+    numericMaximum,
+    numericMinimum,
+    priceRangeError,
+    search,
+    sort,
+  ])
 
   const hasActiveFilters =
-    Boolean(search.trim() || category || city || sort !== 'date-asc')
+    Boolean(
+      search.trim() ||
+        category ||
+        city ||
+        minPrice ||
+        maxPrice ||
+        sort !== 'date-asc',
+    )
   const resetFilters = () => {
     setSearch('')
     setCategory('')
     setCity('')
     setSort('date-asc')
+    setMinPrice('')
+    setMaxPrice('')
   }
   const retryLoading = () => {
     setRetryCount((currentCount) => currentCount + 1)
@@ -146,6 +164,9 @@ function EventsPage() {
           category={category}
           city={city}
           sort={sort}
+          minPrice={minPrice}
+          maxPrice={maxPrice}
+          priceRangeError={priceRangeError}
           categories={categories}
           cities={cities}
           hasActiveFilters={hasActiveFilters}
@@ -153,6 +174,8 @@ function EventsPage() {
           onCategoryChange={setCategory}
           onCityChange={setCity}
           onSortChange={setSort}
+          onMinPriceChange={setMinPrice}
+          onMaxPriceChange={setMaxPrice}
           onReset={resetFilters}
         />
       )}

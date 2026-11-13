@@ -15,6 +15,9 @@ function Footer() {
           </span>
         </Link>
         <p>Good plans bring us together. Islamabad · Rawalpindi</p>
+        <Link className="footer-support-link" to="/support">
+          Support
+        </Link>
         <span className="footer-note">Made for moments that move you.</span>
       </div>
     </footer>

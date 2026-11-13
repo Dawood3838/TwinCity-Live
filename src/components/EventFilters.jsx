@@ -3,6 +3,9 @@ function EventFilters({
   category,
   city,
   sort,
+  minPrice,
+  maxPrice,
+  priceRangeError,
   categories,
   cities,
   hasActiveFilters,
@@ -10,6 +13,8 @@ function EventFilters({
   onCategoryChange,
   onCityChange,
   onSortChange,
+  onMinPriceChange,
+  onMaxPriceChange,
   onReset,
 }) {
   return (
@@ -71,6 +76,45 @@ function EventFilters({
           <option value="price-desc">Price: high to low</option>
         </select>
       </div>
+      <fieldset
+        className="browse-price-range"
+        aria-describedby={priceRangeError ? 'price-range-error' : 'price-range-help'}
+      >
+        <legend>Starting price (Rs)</legend>
+        <div className="browse-price-inputs">
+          <div className="browse-price-input">
+            <label htmlFor="event-min-price">Minimum</label>
+            <input
+              id="event-min-price"
+              type="number"
+              min="0"
+              step="1"
+              inputMode="decimal"
+              value={minPrice}
+              aria-invalid={Boolean(priceRangeError)}
+              aria-describedby={priceRangeError ? 'price-range-error' : 'price-range-help'}
+              onChange={(event) => onMinPriceChange(event.target.value)}
+            />
+          </div>
+          <div className="browse-price-input">
+            <label htmlFor="event-max-price">Maximum</label>
+            <input
+              id="event-max-price"
+              type="number"
+              min="0"
+              step="1"
+              inputMode="decimal"
+              value={maxPrice}
+              aria-invalid={Boolean(priceRangeError)}
+              aria-describedby={priceRangeError ? 'price-range-error' : 'price-range-help'}
+              onChange={(event) => onMaxPriceChange(event.target.value)}
+            />
+          </div>
+        </div>
+        <span className="visually-hidden" id="price-range-help">
+          Filter by event starting ticket price. Bounds are inclusive.
+        </span>
+      </fieldset>
       <button
         className="browse-reset-button"
         type="button"
@@ -79,6 +123,11 @@ function EventFilters({
       >
         Reset
       </button>
+      {priceRangeError && (
+        <p className="browse-price-error" id="price-range-error" role="alert">
+          {priceRangeError}
+        </p>
+      )}
     </form>
   )
 }

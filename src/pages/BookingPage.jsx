@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useBooking } from '../context/useBooking.js'
 import { formatEventDate, formatEventPrice } from '../utils/eventFormatting.js'
@@ -48,6 +48,7 @@ function BookingPage() {
   const [attendee, setAttendee] = useState(initialAttendee)
   const [fieldErrors, setFieldErrors] = useState({})
   const [bookingError, setBookingError] = useState('')
+  const attendeeFieldRefs = useRef({})
 
   const totals = calculateBookingTotals(selections)
   const selectedEvents = useMemo(() => {
@@ -78,6 +79,19 @@ function BookingPage() {
       age: ageEligibility.valid ? '' : ageEligibility.message,
     }
     setFieldErrors(nextFieldErrors)
+
+    const firstInvalidField = ['fullName', 'email', 'age'].find(
+      (fieldName) => nextFieldErrors[fieldName],
+    )
+    if (firstInvalidField) {
+      window.requestAnimationFrame(() => {
+        const field = attendeeFieldRefs.current[firstInvalidField]
+        if (field) {
+          field.scrollIntoView({ behavior: 'smooth', block: 'center' })
+          field.focus({ preventScroll: true })
+        }
+      })
+    }
 
     if (selections.length === 0 || totals.ticketCount === 0) {
       setBookingError('Add at least one ticket before reviewing your booking.')
@@ -206,6 +220,9 @@ function BookingPage() {
                 <label htmlFor="attendee-name">Full name</label>
                 <input
                   id="attendee-name"
+                  ref={(element) => {
+                    attendeeFieldRefs.current.fullName = element
+                  }}
                   name="fullName"
                   type="text"
                   autoComplete="name"
@@ -227,6 +244,9 @@ function BookingPage() {
                 <label htmlFor="attendee-email">Email address</label>
                 <input
                   id="attendee-email"
+                  ref={(element) => {
+                    attendeeFieldRefs.current.email = element
+                  }}
                   name="email"
                   type="email"
                   autoComplete="email"
@@ -248,6 +268,9 @@ function BookingPage() {
                 <label htmlFor="attendee-age">Age</label>
                 <input
                   id="attendee-age"
+                  ref={(element) => {
+                    attendeeFieldRefs.current.age = element
+                  }}
                   name="age"
                   type="number"
                   inputMode="numeric"

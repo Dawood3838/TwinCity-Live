@@ -34,6 +34,7 @@ function Navbar() {
               </span>
             )}
           </NavLink>
+          <NavLink to="/support">Support</NavLink>
         </nav>
 
         <Link className="nav-cta" to="/events">
