@@ -1,6 +1,9 @@
 import { Link, NavLink } from 'react-router-dom'
+import { useBooking } from '../context/BookingContext.jsx'
 
 function Navbar() {
+  const { ticketCount } = useBooking()
+
   return (
     <header className="site-header">
       <div className="nav-shell">
@@ -20,7 +23,17 @@ function Navbar() {
             Home
           </NavLink>
           <NavLink to="/events">Explore Events</NavLink>
-          <NavLink to="/booking">My Booking</NavLink>
+          <NavLink to="/booking">
+            My Booking
+            {ticketCount > 0 && (
+              <span
+                className="nav-booking-count"
+                aria-label={`${ticketCount} ${ticketCount === 1 ? 'ticket' : 'tickets'} selected`}
+              >
+                {ticketCount}
+              </span>
+            )}
+          </NavLink>
         </nav>
 
         <Link className="nav-cta" to="/events">

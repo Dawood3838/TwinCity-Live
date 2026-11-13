@@ -12,3 +12,9 @@ export function loadEvents({ simulateFailure = false } = {}) {
     }, 450)
   })
 }
+
+export function loadEventById(id, options) {
+  return loadEvents(options).then((events) =>
+    events.find((event) => event.id === id) ?? null,
+  )
+}
