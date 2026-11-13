@@ -68,6 +68,9 @@ Browse fictional event listings, search by title, venue, city, or category, and
 combine those criteria with city, category, starting-price range, and sorting.
 Open an event to view its details and select an available ticket type and
 quantity. The Navbar count and booking summary use the shared BookingContext.
+Event cards and details provide readable fallbacks for missing descriptive
+fields and artwork, and long titles, descriptions, and venue names wrap without
+being truncated.
 
 The controlled booking form validates attendee name, email, positive whole-number
 age, and the minimum age of every selected event. On valid submission, the app
@@ -123,11 +126,13 @@ development/testing feature and does not modify the source event data.
 | Effects and localStorage | `src/context/BookingContext.jsx` |
 | Routing and route parameters | `src/App.jsx`, `src/pages/EventDetailsPage.jsx` |
 | Array filtering and sorting | `src/utils/eventFiltering.js`, used by `src/pages/EventsPage.jsx` |
+| Event content fallbacks | `src/utils/eventContent.js`, used by `src/services/eventService.js` and `src/context/BookingContext.jsx` |
+| Empty catalogue and no-match states | `src/utils/eventListingState.js`, used by `src/pages/EventsPage.jsx` |
 | Controlled forms and validation | `src/pages/BookingPage.jsx`, `src/utils/ageEligibility.js` |
 | Derived pricing | `src/utils/bookingPricing.js` |
 | Async loading and error handling | `src/services/eventService.js`, `src/pages/EventsPage.jsx`, `src/pages/EventDetailsPage.jsx` |
 | Capacity, age, and availability rules | `src/utils/ticketValidation.js`, `src/utils/ageEligibility.js`, `src/utils/eventAvailability.js` |
-| Automated business-rule tests | `tests/ticketValidation.test.js`, `tests/eventFiltering.test.js` |
+| Automated business-rule, content, and state tests | `tests/ticketValidation.test.js`, `tests/ageEligibility.test.js`, `tests/eventFiltering.test.js`, `tests/eventContent.test.js`, `tests/eventListingState.test.js` |
 
 ## Reference investigation and project decisions
 

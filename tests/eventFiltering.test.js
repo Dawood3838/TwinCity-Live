@@ -35,3 +35,20 @@ test('price sorting applies after the inclusive range', () => {
 
   assert.deepEqual(result.map((event) => event.id), ['E004', 'E010'])
 })
+
+test('handles events with missing searchable and pricing fields', () => {
+  const eventsWithoutOptionalFields = [{ id: 'E-empty' }]
+
+  assert.deepEqual(
+    filterAndSortEvents(eventsWithoutOptionalFields).map((event) => event.id),
+    ['E-empty'],
+  )
+  assert.deepEqual(
+    filterAndSortEvents(eventsWithoutOptionalFields, { search: 'unavailable' }),
+    [],
+  )
+  assert.deepEqual(
+    filterAndSortEvents(eventsWithoutOptionalFields, { minPrice: 1 }),
+    [],
+  )
+})

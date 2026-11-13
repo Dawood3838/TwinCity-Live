@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import events from '../data/events.js'
 import { applyAvailabilityDemo, parseAvailabilityDemo } from '../utils/eventAvailability.js'
+import { normalizeEventContent } from '../utils/eventContent.js'
 import { validateTicketQuantity } from '../utils/ticketValidation.js'
 import { BookingContext } from './BookingContextValue.js'
 
@@ -138,7 +139,11 @@ export function BookingProvider({ children }) {
     parseAvailabilityDemo(window.location.search),
   )
   const eventCatalog = useMemo(
-    () => applyAvailabilityDemo(events, availabilityDemo),
+    () =>
+      applyAvailabilityDemo(
+        events.map(normalizeEventContent),
+        availabilityDemo,
+      ),
     [availabilityDemo],
   )
   const { selections, invalidSelections } = useMemo(

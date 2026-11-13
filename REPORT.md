@@ -63,11 +63,19 @@ presented as screenshots of TwinCity Live.
 
 ## Verification
 
-The detailed action/expected/actual/result table is in
-[`VERIFICATION.md`](./VERIFICATION.md). The automated tests, lint, production
-build, browser checks, responsive checks, and unverified cases are listed
-there. The empty-catalogue and altered missing/long-content browser cases were
-not run because the application has no corresponding test fixture or demo.
+The authoritative assignment brief PDF is now present in the repository root
+and was read during the final audit. It is the assignment source, not the
+separate report PDF required for submission.
+
+The expanded Node suite contains 20 passing tests, including fixtures for
+missing and unusually long event content, separate empty-catalogue/no-match
+state checks, and unknown versus explicitly unrestricted age and unknown
+versus sold-out availability. Unknown age eligibility blocks booking.
+`npm.cmd run lint` and `npm.cmd run build` passed. A production preview DOM
+stress check replaced card and detail text with long unbroken strings at
+390px and 1280px; measured document widths stayed below the viewports. The
+check details and limits are in
+[`VERIFICATION.md`](./VERIFICATION.md).
 
 ## Limitations
 
@@ -78,8 +86,9 @@ not run because the application has no corresponding test fixture or demo.
 - No project support email address is configured; help is provided internally
   by the Support route.
 - Public deployment and final application screenshots are pending.
-- The authoritative assignment PDF was not available, so an exact FR01–FR19
-  crosswalk must be completed after the PDF is supplied.
+- The final application screenshots, public deployment, and submission report
+  PDF are still pending; the assignment brief PDF in the repository is not a
+  substitute for the report.
 - Student name, roll number, and section are not verified in the repository.
 
 ## Submission package

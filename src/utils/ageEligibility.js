@@ -13,6 +13,20 @@ export function validateAgeEligibility(age, selectedEvents) {
     }
   }
 
+  const unspecifiedEvents = selectedEvents.filter(
+    (event) => !hasKnownAgeRequirement(event),
+  )
+  if (unspecifiedEvents.length > 0) {
+    const eventTitles = unspecifiedEvents
+      .map((event) => event.title)
+      .join(', ')
+    return {
+      valid: false,
+      message: `Age requirement not specified for: ${eventTitles}. Eligibility cannot be verified.`,
+      minimumAge: null,
+    }
+  }
+
   const ageRestrictedEvents = selectedEvents.filter(
     (event) => Number.isInteger(event.minimumAge) && event.minimumAge > 0,
   )
@@ -40,4 +54,16 @@ export function validateAgeEligibility(age, selectedEvents) {
     message: '',
     minimumAge: minimumAge || null,
   }
+}
+
+function hasKnownAgeRequirement(event) {
+  if (typeof event.ageRequirementKnown === 'boolean') {
+    return event.ageRequirementKnown
+  }
+
+  return (
+    Object.prototype.hasOwnProperty.call(event, 'minimumAge') &&
+    (event.minimumAge === null ||
+      (Number.isSafeInteger(event.minimumAge) && event.minimumAge > 0))
+  )
 }

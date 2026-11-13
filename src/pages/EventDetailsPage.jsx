@@ -254,14 +254,20 @@ function EventDetailsPage() {
             </div>
             <div>
               <dt>Remaining availability</dt>
-              <dd>{event.availableTickets.toLocaleString()} tickets</dd>
+              <dd>
+                {event.availableTickets === null
+                  ? 'Availability unavailable'
+                  : `${event.availableTickets.toLocaleString()} tickets`}
+              </dd>
             </div>
             <div>
               <dt>Age guidance</dt>
               <dd>
-                {event.minimumAge === null
-                  ? 'All ages welcome'
-                  : `Ages ${event.minimumAge}+`}
+                {!event.ageRequirementKnown
+                  ? 'Age requirement not specified'
+                  : event.minimumAge === null
+                    ? 'All ages welcome'
+                    : `Ages ${event.minimumAge}+`}
               </dd>
             </div>
           </dl>

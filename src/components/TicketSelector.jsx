@@ -26,8 +26,10 @@ function TicketSelector({
         <p className="eyebrow">YOUR EXPERIENCE</p>
         <h2 id="ticket-selector-heading">Choose your tickets</h2>
         <p>
-          {event.availableTickets.toLocaleString()} tickets remain for this
-          event. Each ticket type has its own availability.
+          {event.availableTickets === null
+            ? 'Availability unavailable.'
+            : `${event.availableTickets.toLocaleString()} tickets remain for this event.`}{' '}
+          Each ticket type has its own availability.
         </p>
       </div>
 
@@ -43,7 +45,11 @@ function TicketSelector({
             <legend>Ticket type</legend>
             <div className="ticket-type-options">
               {event.ticketTypes.map((ticket) => {
-                const isAvailable = ticket.availableQuantity > 0
+                const hasKnownAvailability = Number.isSafeInteger(
+                  ticket.availableQuantity,
+                )
+                const isAvailable =
+                  hasKnownAvailability && ticket.availableQuantity > 0
                 const isSelected = ticket.id === ticketTypeId
 
                 return (
@@ -71,9 +77,11 @@ function TicketSelector({
                       <strong>{ticket.name}</strong>
                       <span>{formatEventPrice(ticket.price)} per ticket</span>
                       <span>
-                        {isAvailable
-                          ? `${ticket.availableQuantity.toLocaleString()} available`
-                          : 'Sold out — unavailable'}
+                        {!hasKnownAvailability
+                          ? 'Availability unavailable'
+                          : isAvailable
+                            ? `${ticket.availableQuantity.toLocaleString()} available`
+                            : 'Sold out — unavailable'}
                       </span>
                     </span>
                   </label>
@@ -82,7 +90,12 @@ function TicketSelector({
             </div>
           </fieldset>
 
-          {selectedTicket?.availableQuantity > 0 ? (
+          {selectedTicket &&
+          !Number.isSafeInteger(selectedTicket.availableQuantity) ? (
+            <p className="ticket-unavailable-message" role="status">
+              Availability unavailable.
+            </p>
+          ) : selectedTicket?.availableQuantity > 0 ? (
             <>
               <div className="ticket-quantity-section">
                 <div className="ticket-quantity-heading">

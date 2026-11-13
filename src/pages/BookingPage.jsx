@@ -304,9 +304,11 @@ function BookingPage() {
                       <li key={event.id}>
                         <span>{event.title}</span>
                         <strong>
-                          {event.minimumAge === null
-                            ? 'No minimum age'
-                            : `${event.minimumAge}+ required`}
+                          {!event.ageRequirementKnown
+                            ? 'Age requirement not specified'
+                            : event.minimumAge === null
+                              ? 'No minimum age'
+                              : `${event.minimumAge}+ required`}
                         </strong>
                       </li>
                     ))}

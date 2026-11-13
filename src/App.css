@@ -1500,6 +1500,8 @@
   place-items: center;
   overflow: hidden;
   isolation: isolate;
+  color: #fff7e7;
+  background: linear-gradient(140deg, #627974, #344854);
 }
 
 .browse-event-art::before,
@@ -1645,6 +1647,7 @@
   font-size: 0.61rem;
   font-weight: 700;
   letter-spacing: 0.03em;
+  overflow-wrap: anywhere;
 }
 
 .browse-event-location span {
@@ -1659,6 +1662,7 @@
   font-weight: 520;
   letter-spacing: -0.04em;
   line-height: 1.12;
+  overflow-wrap: anywhere;
 }
 
 .browse-event-description {
@@ -1667,6 +1671,7 @@
   color: #727876;
   font-size: 0.68rem;
   line-height: 1.6;
+  overflow-wrap: anywhere;
 }
 
 .browse-event-venue,
@@ -1678,11 +1683,13 @@
 
 .browse-event-venue {
   font-weight: 600;
+  overflow-wrap: anywhere;
 }
 
 .browse-event-date {
   margin-top: 0.25rem;
   color: #888b87;
+  overflow-wrap: anywhere;
 }
 
 .browse-event-bottom {
@@ -1708,6 +1715,7 @@
 
 .browse-event-price strong {
   margin-top: 0.18rem;
+  overflow-wrap: anywhere;
   color: var(--ink);
   font-size: 0.86rem;
 }
@@ -1716,6 +1724,7 @@
   color: #6d756e;
   font-size: 0.57rem;
   text-align: right;
+  overflow-wrap: anywhere;
 }
 
 .browse-event-action {
@@ -1996,10 +2005,13 @@
   position: absolute;
   right: 1.2rem;
   bottom: 1rem;
+  max-width: calc(100% - 2.4rem);
   color: rgba(255, 255, 255, 0.85);
   font-size: 0.58rem;
   font-weight: 750;
   letter-spacing: 0.14em;
+  overflow-wrap: anywhere;
+  text-align: right;
 }
 
 .event-details-layout {
@@ -2018,6 +2030,7 @@
 .event-detail-information > .eyebrow {
   margin-bottom: 0.75rem;
   color: var(--coral-dark);
+  overflow-wrap: anywhere;
 }
 
 .event-detail-information h1 {
@@ -2028,6 +2041,7 @@
   font-weight: 450;
   letter-spacing: -0.06em;
   line-height: 1;
+  overflow-wrap: anywhere;
 }
 
 .event-detail-lead {
@@ -2036,6 +2050,7 @@
   font-size: 0.95rem;
   font-weight: 600;
   line-height: 1.7;
+  overflow-wrap: anywhere;
 }
 
 .event-detail-description {
@@ -2043,6 +2058,7 @@
   color: #737a78;
   font-size: 0.8rem;
   line-height: 1.85;
+  overflow-wrap: anywhere;
 }
 
 .event-detail-facts {
@@ -2073,6 +2089,7 @@
   font-size: 0.73rem;
   font-weight: 620;
   line-height: 1.55;
+  overflow-wrap: anywhere;
 }
 
 .ticket-selector {

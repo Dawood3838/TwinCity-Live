@@ -4,6 +4,7 @@ import EventFilters from '../components/EventFilters.jsx'
 import { useBooking } from '../context/useBooking.js'
 import { loadEvents } from '../services/eventService.js'
 import { filterAndSortEvents } from '../utils/eventFiltering.js'
+import { getEventListingState } from '../utils/eventListingState.js'
 
 const EMPTY_EVENTS = []
 
@@ -117,6 +118,7 @@ function EventsPage() {
     search,
     sort,
   ])
+  const eventListingState = getEventListingState(events, filteredEvents)
 
   const hasActiveFilters =
     Boolean(
@@ -198,7 +200,7 @@ function EventsPage() {
         </section>
       )}
 
-      {loadStatus === 'success' && events.length === 0 && (
+      {loadStatus === 'success' && eventListingState === 'empty-catalogue' && (
         <section className="browse-message">
           <span className="browse-message-icon" aria-hidden="true">✦</span>
           <h2>The event calendar is taking shape.</h2>
@@ -206,14 +208,14 @@ function EventsPage() {
         </section>
       )}
 
-      {loadStatus === 'success' && events.length > 0 && (
+      {loadStatus === 'success' && eventListingState !== 'empty-catalogue' && (
         <section className="browse-state" aria-live="polite">
           <p className="browse-result-count">
             {filteredEvents.length === events.length
               ? `Showing all ${events.length} events`
               : `${filteredEvents.length} of ${events.length} events`}
           </p>
-          {filteredEvents.length > 0 ? (
+          {eventListingState === 'results' ? (
             <div className="browse-event-grid">
               {filteredEvents.map((event) => (
                 <EventCard event={event} key={event.id} />

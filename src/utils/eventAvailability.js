@@ -1,3 +1,5 @@
+import { getTotalTicketAvailability } from './eventContent.js'
+
 export function parseAvailabilityDemo(search) {
   const value = new URLSearchParams(search).get('demoAvailability')
   if (!value) {
@@ -54,10 +56,7 @@ export function applyAvailabilityDemo(eventList, availabilityDemo) {
     return {
       ...event,
       ticketTypes,
-      availableTickets: ticketTypes.reduce(
-        (total, ticket) => total + ticket.availableQuantity,
-        0,
-      ),
+      availableTickets: getTotalTicketAvailability(ticketTypes),
     }
   })
 }

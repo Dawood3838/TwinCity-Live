@@ -6,6 +6,8 @@ import {
 } from '../utils/eventFormatting.js'
 
 function EventCard({ event }) {
+  const startingPrice = getStartingPrice(event)
+
   return (
     <article className="browse-event-card">
       <div
@@ -31,10 +33,16 @@ function EventCard({ event }) {
         <div className="browse-event-bottom">
           <div className="browse-event-price">
             <span>Starting from</span>
-            <strong>{formatEventPrice(getStartingPrice(event))}</strong>
+            <strong>
+              {startingPrice === null
+                ? 'Price unavailable'
+                : formatEventPrice(startingPrice)}
+            </strong>
           </div>
           <span className="browse-event-availability">
-            {event.availableTickets.toLocaleString()} available
+            {event.availableTickets === null
+              ? 'Availability unavailable'
+              : `${event.availableTickets.toLocaleString()} available`}
           </span>
         </div>
         <Link className="browse-event-action" to={`/events/${event.id}`}>

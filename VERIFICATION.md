@@ -4,9 +4,9 @@ Browser checks were performed against the local Vite application and its
 production preview. Reference-site observations were made from the supplied
 images only; they were not live tests of those external websites.
 
-The assignment PDF was not present in the repository or supplied attachment.
-The exact FR01–FR19 specification cross-check therefore remains pending; this
-checklist covers the requirements in the available milestone instructions.
+The authoritative assignment brief PDF is now present in the repository root
+and was read during the final audit. This checklist records the checks below;
+the assignment brief is not the separate report PDF required for submission.
 
 | Case | Actions | Expected | Actual | Result |
 | --- | --- | --- | --- | --- |
@@ -17,8 +17,10 @@ checklist covers the requirements in the available milestone instructions.
 | Combined filters and sort | Combine that range with “bootcamp” search, Workshop category, and Rawalpindi; separately sort by low starting price. | Filters intersect; sort orders only matching results. | Combined filters returned the bootcamp. Price-ascending placed Spring Book Fair (Rs 300) first. | Pass |
 | Invalid price range and reset | Set minimum above maximum, then reset filters. | Show a clear range error; Reset restores the full catalogue and clears bounds. | “Minimum price must not exceed maximum price” appeared; Reset restored all 12 events. | Pass |
 | No search matches | Search for a term not present in the catalogue. | Show a no-matches state distinct from loading or error. | “No events match those filters” appeared; clear/reset restored 12 events. | Pass |
-| Empty catalogue | No empty-catalogue demo or data injection was used. | Empty catalogue state is distinct from no matches. | The separate empty-catalogue component branch was not browser-exercised; this remains unverified. | Not run |
-| Missing or unusually long event content | No catalogue fixture was added or mutated to remove fields or insert extreme-length content. | Missing/long content should remain usable and not overflow. | Not browser-verified against altered event data. | Not run |
+| Empty catalogue versus no matches | Run the `eventListingState.test.js` fixture with an empty catalogue and with a non-empty catalogue whose filtered result is empty. | Return separate `empty-catalogue` and `no-matches` states. | Both branches passed; `EventsPage` uses the tested state helper to render distinct messages. This is a unit-level state test, not a browser-injected empty catalogue. | Pass (automated) |
+| Missing event content | Run the `eventContent.test.js` fixture with missing title, category, city, venue, descriptions, artwork, date, ticket types, availability, and age. | Provide readable text and decorative artwork fallbacks; do not throw or produce an invalid date/price. | Normalization returned the expected fallback fields; invalid/missing dates format as “Date and time to be announced”; absent ticket pricing is represented as unavailable. | Pass (automated) |
+| Unknown age and availability | Run the `ageEligibility.test.js` and `eventContent.test.js` cases for missing age/inventory, explicit no-minimum age, and explicit zero capacity. | Unknown age is not unrestricted; unknown availability is not sold out; preserve known unrestricted and sold-out behavior. | Missing age displays “Age requirement not specified” and blocks eligibility; explicit `minimumAge: null` remains unrestricted. Missing totals display “Availability unavailable”; explicit zero remains sold out. | Pass (automated) |
+| Unusually long event content | Run the long-content fixture with a 240-character title, repeated description, and long unbroken venue; then temporarily replace card/detail text in the production-preview DOM with long unbroken strings at 390px and 1280px. | Preserve the complete text, wrap it, and avoid page-wide horizontal overflow. | Unit assertions confirmed the content is retained. In preview, document width was 375px at a 390px viewport and 1265px at a 1280px viewport; long text wrapped within its containers (with subpixel rounding at mobile width) and caused no page-wide overflow. The browser check stress-tested CSS by changing rendered DOM text; missing-field behavior was covered by the unit fixture. | Pass |
 | Loading failure and retry | Open `/events?demoLoadError=1`, then select Retry. | First request shows an error; retry loads events. | Error appeared and Retry displayed all 12 events. | Pass |
 | Invalid event and route | Open `/events/INVALID` and an unknown route. | Show useful not-found states without runtime errors. | Event-specific not-found and general 404 pages appeared. | Pass |
 | Browser history | Browse to an event, use browser Back, then Forward. | Route content follows browser history. | Events list and event details were restored in sequence. | Pass |
@@ -38,10 +40,11 @@ checklist covers the requirements in the available milestone instructions.
 
 ## Automated checks
 
-- `node --test`: 8 passing tests.
-- `npm.cmd test`: 8 passing tests.
+- `node --test`: 20 passing tests, including missing/long content, empty/no-match states, and unknown-versus-known age and availability cases.
+- `npm.cmd test`: 20 passing tests.
 - `npm.cmd run lint`: passed with no warnings.
-- `npm.cmd run build`: passed.
+- `npm.cmd run build`: passed; Vite produced the production bundle.
+- `git diff --check`: passed.
 - `vercel.json`: parsed as valid JSON.
 
 ## Screenshot handling

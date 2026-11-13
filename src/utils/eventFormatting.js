@@ -12,7 +12,14 @@ const eventPriceFormatter = new Intl.NumberFormat('en-PK', {
 })
 
 export function formatEventDate(dateTime) {
-  return eventDateFormatter.format(new Date(dateTime))
+  if (dateTime === null || dateTime === undefined || dateTime === '') {
+    return 'Date and time to be announced'
+  }
+
+  const date = new Date(dateTime)
+  return Number.isFinite(date.getTime())
+    ? eventDateFormatter.format(date)
+    : 'Date and time to be announced'
 }
 
 export function formatEventPrice(price) {
@@ -20,8 +27,12 @@ export function formatEventPrice(price) {
 }
 
 export function getStartingPrice(event) {
-  return event.ticketTypes.reduce(
-    (lowestPrice, ticket) => Math.min(lowestPrice, ticket.price),
-    Number.POSITIVE_INFINITY,
-  )
+  const ticketTypes = Array.isArray(event?.ticketTypes)
+    ? event.ticketTypes
+    : []
+  const prices = ticketTypes
+    .map((ticket) => ticket?.price)
+    .filter((price) => Number.isFinite(price) && price >= 0)
+
+  return prices.length > 0 ? Math.min(...prices) : null
 }

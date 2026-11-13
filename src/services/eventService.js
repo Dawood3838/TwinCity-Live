@@ -1,5 +1,6 @@
 import events from '../data/events.js'
 import { applyAvailabilityDemo } from '../utils/eventAvailability.js'
+import { normalizeEventContent } from '../utils/eventContent.js'
 
 export function loadEvents({
   simulateFailure = false,
@@ -12,7 +13,8 @@ export function loadEvents({
         return
       }
 
-      resolve(applyAvailabilityDemo(events, availabilityDemo))
+      const eventCatalog = events.map(normalizeEventContent)
+      resolve(applyAvailabilityDemo(eventCatalog, availabilityDemo))
     }, 450)
   })
 }
