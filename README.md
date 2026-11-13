@@ -11,6 +11,12 @@ Currently, two official plugins are available:
 
 The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
+## Event loading demo
+
+The event catalog is loaded from local data with a short simulated delay. To preview
+the loading error state and its recovery, open `/events?demoLoadError=1`. The first
+load fails intentionally; select **Retry** to load the local events successfully.
+
 ## Expanding the Oxlint configuration
 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.

@@ -1,0 +1,268 @@
+const events = [
+  {
+    id: 'E001',
+    title: 'TwinCity Music Fest',
+    category: 'Concert',
+    city: 'Islamabad',
+    venue: 'Crescent Grounds',
+    dateTime: '2026-12-05T17:00:00+05:00',
+    shortDescription: 'An open-air evening of live music, local artists, and city lights.',
+    description:
+      'Spend a memorable evening with a line-up of emerging and established Pakistani performers. The festival grounds feature food stalls, shaded seating, and room to dance beneath the winter sky.',
+    artwork: {
+      theme: 'music-fest',
+      symbol: '♫',
+      label: 'Abstract sunset colors and lights for an outdoor music festival',
+    },
+    ticketTypes: [
+      { name: 'General Admission', price: 2500 },
+      { name: 'Front Row', price: 4500 },
+    ],
+    availableTickets: 850,
+    minimumAge: 16,
+  },
+  {
+    id: 'E002',
+    title: 'Acoustic Nights',
+    category: 'Concert',
+    city: 'Rawalpindi',
+    venue: 'The Courtyard Sessions',
+    dateTime: '2026-11-28T19:30:00+05:00',
+    shortDescription: 'Unplug, settle in, and hear intimate sets from indie songwriters.',
+    description:
+      'A relaxed evening of stripped-back performances in a warm courtyard setting. Local singer-songwriters share original music and stories between sets, with refreshments available throughout the show.',
+    artwork: {
+      theme: 'acoustic',
+      symbol: '♪',
+      label: 'Soft evening colors for an intimate acoustic music show',
+    },
+    ticketTypes: [
+      { name: 'Standard Seat', price: 1200 },
+      { name: 'Reserved Seat', price: 2200 },
+    ],
+    availableTickets: 94,
+    minimumAge: 12,
+  },
+  {
+    id: 'E003',
+    title: 'Tech Innovators Summit',
+    category: 'Conference',
+    city: 'Islamabad',
+    venue: 'Capital Convention Pavilion',
+    dateTime: '2026-12-12T09:00:00+05:00',
+    shortDescription: 'A full day of practical ideas from Pakistan’s technology community.',
+    description:
+      'Hear product builders, founders, and researchers discuss responsible AI, digital products, and the next generation of local technology. The day includes keynote talks, small-group sessions, and dedicated networking breaks.',
+    artwork: {
+      theme: 'technology',
+      symbol: '⌘',
+      label: 'Geometric blue and coral shapes representing technology',
+    },
+    ticketTypes: [
+      { name: 'Student Pass', price: 3000 },
+      { name: 'Standard Pass', price: 6500 },
+    ],
+    availableTickets: 320,
+    minimumAge: 16,
+  },
+  {
+    id: 'E004',
+    title: 'Web Development Bootcamp',
+    category: 'Workshop',
+    city: 'Rawalpindi',
+    venue: 'Potohar Learning Studio',
+    dateTime: '2026-11-21T10:00:00+05:00',
+    shortDescription: 'Build a small, responsive web project with friendly mentors.',
+    description:
+      'Bring a laptop and learn the fundamentals of modern web development through guided exercises. Mentors help participants turn an idea into a working page, with plenty of time for questions and peer feedback.',
+    artwork: {
+      theme: 'workshop',
+      symbol: '</>',
+      label: 'Colorful abstract code symbols for a web development workshop',
+    },
+    ticketTypes: [
+      { name: 'Workshop Seat', price: 1800 },
+      { name: 'Seat + Materials', price: 3200 },
+    ],
+    availableTickets: 42,
+    minimumAge: 15,
+  },
+  {
+    id: 'E005',
+    title: 'Photography Exhibition',
+    category: 'Exhibition',
+    city: 'Islamabad',
+    venue: 'Gallery 27',
+    dateTime: '2026-11-25T16:00:00+05:00',
+    shortDescription: 'A new collection of photographs tracing everyday city life.',
+    description:
+      'Explore a considered collection of street, portrait, and landscape photography by artists from across the region. Visitors can join a short curator introduction at 5 PM; the gallery remains open until 9 PM.',
+    artwork: {
+      theme: 'photography',
+      symbol: '▧',
+      label: 'Layered warm-toned frames for a photography exhibition',
+    },
+    ticketTypes: [
+      { name: 'Gallery Entry', price: 800 },
+      { name: 'Entry + Curator Walk', price: 1500 },
+    ],
+    availableTickets: 210,
+    minimumAge: null,
+  },
+  {
+    id: 'E006',
+    title: 'Startup Founders Meetup',
+    category: 'Conference',
+    city: 'Islamabad',
+    venue: 'Foundry Co-work Hall',
+    dateTime: '2026-12-02T18:00:00+05:00',
+    shortDescription: 'Swap honest lessons and meet people building new ventures.',
+    description:
+      'An informal evening for early-stage founders, makers, and aspiring entrepreneurs. A panel of local operators shares what they learned building their first products, followed by open networking and a short pitch circle.',
+    artwork: {
+      theme: 'founders',
+      symbol: '↗',
+      label: 'Abstract rising shapes for a startup founders meetup',
+    },
+    ticketTypes: [
+      { name: 'Community Entry', price: 1000 },
+      { name: 'Supporter Entry', price: 2500 },
+    ],
+    availableTickets: 76,
+    minimumAge: 18,
+  },
+  {
+    id: 'E007',
+    title: 'Food and Culture Festival',
+    category: 'Festival',
+    city: 'Rawalpindi',
+    venue: 'Heritage Lawn',
+    dateTime: '2026-12-19T13:00:00+05:00',
+    shortDescription: 'Taste regional favorites and enjoy a day of music and craft.',
+    description:
+      'Discover traditional and contemporary flavors from local kitchens alongside craft stalls and family-friendly performances. The outdoor festival runs through the afternoon and early evening, with seating available across the lawn.',
+    artwork: {
+      theme: 'food',
+      symbol: '✺',
+      label: 'Bright, festive colors inspired by local food and culture',
+    },
+    ticketTypes: [
+      { name: 'Day Entry', price: 500 },
+      { name: 'Entry + Tasting Tokens', price: 1200 },
+    ],
+    availableTickets: 1200,
+    minimumAge: null,
+  },
+  {
+    id: 'E008',
+    title: 'Digital Art Showcase',
+    category: 'Exhibition',
+    city: 'Islamabad',
+    venue: 'Pixel House Gallery',
+    dateTime: '2026-12-10T17:00:00+05:00',
+    shortDescription: 'Step into immersive projections and experimental digital works.',
+    description:
+      'A gallery-wide showcase of motion, interactive, and generative art from a new wave of digital artists. Move at your own pace through the installations and join the artists for a short conversation at 7 PM.',
+    artwork: {
+      theme: 'digital-art',
+      symbol: '✦',
+      label: 'Abstract neon gradients for a digital art exhibition',
+    },
+    ticketTypes: [
+      { name: 'General Entry', price: 900 },
+      { name: 'Entry + Artist Talk', price: 1700 },
+    ],
+    availableTickets: 160,
+    minimumAge: 10,
+  },
+  {
+    id: 'E009',
+    title: 'Cricket Fan Experience',
+    category: 'Sports',
+    city: 'Rawalpindi',
+    venue: 'Rawal Sports Arena',
+    dateTime: '2026-11-29T15:00:00+05:00',
+    shortDescription: 'A lively afternoon of cricket challenges and fan activities.',
+    description:
+      'Test your skills in friendly batting and bowling challenges, meet local cricket personalities, and enjoy interactive displays for fans of every age. This is a fan event, not a live professional match.',
+    artwork: {
+      theme: 'cricket',
+      symbol: '◉',
+      label: 'Green field-inspired shapes for a cricket fan event',
+    },
+    ticketTypes: [
+      { name: 'Fan Entry', price: 1500 },
+      { name: 'Fan Entry + Challenge Lane', price: 3000 },
+    ],
+    availableTickets: 280,
+    minimumAge: 8,
+  },
+  {
+    id: 'E010',
+    title: 'Career Development Workshop',
+    category: 'Workshop',
+    city: 'Islamabad',
+    venue: 'SkillUp Studio',
+    dateTime: '2026-12-06T11:00:00+05:00',
+    shortDescription: 'Get practical tools for your next interview and career move.',
+    description:
+      'Practice telling your professional story, strengthen your CV, and learn a repeatable approach to interview preparation. The workshop is designed for students and early-career professionals, with take-home exercises and peer review.',
+    artwork: {
+      theme: 'career',
+      symbol: '✳',
+      label: 'Warm graphic shapes for a career development workshop',
+    },
+    ticketTypes: [
+      { name: 'Workshop Entry', price: 1300 },
+      { name: 'Entry + CV Review', price: 2600 },
+    ],
+    availableTickets: 58,
+    minimumAge: 16,
+  },
+  {
+    id: 'E011',
+    title: 'Comedy Night Live',
+    category: 'Entertainment',
+    city: 'Rawalpindi',
+    venue: 'Basement Comedy Room',
+    dateTime: '2026-11-27T20:00:00+05:00',
+    shortDescription: 'A sharp, easy-going night of stand-up from local comics.',
+    description:
+      'Settle in for a rotating line-up of stand-up performers sharing fresh material and familiar observations. The show includes one interval and is intended for a mature audience.',
+    artwork: {
+      theme: 'comedy',
+      symbol: '☺',
+      label: 'Playful coral and purple shapes for a live comedy show',
+    },
+    ticketTypes: [
+      { name: 'Standard Seat', price: 1200 },
+      { name: 'Front Table', price: 2400 },
+    ],
+    availableTickets: 36,
+    minimumAge: 16,
+  },
+  {
+    id: 'E012',
+    title: 'Spring Book Fair',
+    category: 'Exhibition',
+    city: 'Islamabad',
+    venue: 'Margalla Expo Hall',
+    dateTime: '2027-03-20T10:00:00+05:00',
+    shortDescription: 'Browse independent publishers, new reads, and bookish talks.',
+    description:
+      'Meet local booksellers and independent publishers, browse a broad range of titles, and join short readings throughout the day. Families are welcome, and a quiet reading corner is available inside the hall.',
+    artwork: {
+      theme: 'books',
+      symbol: '▤',
+      label: 'Stacked book-inspired shapes in warm colors',
+    },
+    ticketTypes: [
+      { name: 'Fair Entry', price: 300 },
+      { name: 'Entry + Reading Session', price: 700 },
+    ],
+    availableTickets: 640,
+    minimumAge: null,
+  },
+]
+
+export default events
