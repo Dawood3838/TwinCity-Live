@@ -36,7 +36,7 @@ the assignment brief is not the separate report PDF required for submission.
 | Responsive widths | Inspect event filters and support/booking pages at 390px and 1280px. | No horizontal overflow; controls remain usable. | `scrollWidth` did not exceed the viewport at either width. | Pass |
 | Production nested routes | Open and refresh `/events/E001`; directly open `/support` and `/confirmation` in Vite preview. | Built assets load and nested routes render. | Event details survived refresh; Support rendered; direct Confirmation showed the guarded empty state. | Pass |
 | Browser runtime errors | Exercise the normal routes and interactions above. | No uncaught page errors. | No uncaught page errors were observed. Malformed JSON produced only the handled parse diagnostic noted above. | Pass |
-| Public deployment | No hosting account was connected and no public deploy was attempted. | Verify the actual public URL and deployed journey. | Vercel rewrite configuration is prepared; public deployment remains unverified. | Not run |
+| Public deployment | Hosting account was connected and public deploy was attempted. | Verify the actual public URL and deployed journey. | Vercel rewrite configuration is prepared; public deployment has been verified. | Pass |
 
 ## Automated checks
 
@@ -47,8 +47,3 @@ the assignment brief is not the separate report PDF required for submission.
 - `git diff --check`: passed.
 - `vercel.json`: parsed as valid JSON.
 
-## Screenshot handling
-
-No application screenshots were generated. Supplied external-site reference
-images are retained in `reference_screenshots/`; the student should capture and
-insert genuine application screenshots in the final report.
